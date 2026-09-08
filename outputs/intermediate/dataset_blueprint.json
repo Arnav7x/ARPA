@@ -1,0 +1,30 @@
+{
+  "variables": [
+    {
+      "name": "transparency_score",
+      "type": "continuous",
+      "distribution": "normal",
+      "mean": 4.8,
+      "std": 1.1
+    },
+    {
+      "name": "trust_score",
+      "type": "continuous",
+      "distribution": "normal",
+      "mean": 5.1,
+      "std": 1
+    }
+  ],
+  "relationships": [
+    {
+      "outcome": "trust_score",
+      "predictors": [
+        {
+          "name": "transparency_score",
+          "weight": 0.7
+        }
+      ],
+      "noiseStd": 0.6
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "hypothesisId": "H1",
+  "testType": "pearson_correlation",
+  "variables": [
+    "transparency_score",
+    "trust_score"
+  ],
+  "n": 500,
+  "correlation": 0.8009,
+  "pValue": 0,
+  "ciLow": 0.7671,
+  "ciHigh": 0.8303,
+  "assumptionChecks": {
+    "normalityXPValue": 0.6743,
+    "normalityYPValue": 0.9722,
+    "warnings": []
+  }
+}

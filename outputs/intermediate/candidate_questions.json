@@ -1,0 +1,42 @@
+[
+  {
+    "label": "RQ1",
+    "question": "Mock research question 1",
+    "feasibilityNote": "Feasible with survey and workflow data.",
+    "sourcePapers": [
+      "mock-paper-1.pdf"
+    ]
+  },
+  {
+    "label": "RQ2",
+    "question": "Mock research question 2",
+    "feasibilityNote": "Feasible with survey and workflow data.",
+    "sourcePapers": [
+      "mock-paper-1.pdf"
+    ]
+  },
+  {
+    "label": "RQ3",
+    "question": "Mock research question 3",
+    "feasibilityNote": "Feasible with survey and workflow data.",
+    "sourcePapers": [
+      "mock-paper-1.pdf"
+    ]
+  },
+  {
+    "label": "RQ4",
+    "question": "Mock research question 4",
+    "feasibilityNote": "Feasible with survey and workflow data.",
+    "sourcePapers": [
+      "mock-paper-1.pdf"
+    ]
+  },
+  {
+    "label": "RQ5",
+    "question": "Mock research question 5",
+    "feasibilityNote": "Feasible with survey and workflow data.",
+    "sourcePapers": [
+      "mock-paper-1.pdf"
+    ]
+  }
+]

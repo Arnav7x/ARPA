@@ -1,0 +1,30 @@
+{
+  "hypotheses": [
+    {
+      "id": "H1",
+      "hypothesis": "Higher transparency is associated with higher trust.",
+      "statisticalTest": "pearson_correlation",
+      "unitOfAnalysis": "Reviewer",
+      "sampleSizeGuidance": "At least 150 cases",
+      "assumptions": [
+        "Approximate normality",
+        "Linear relationship"
+      ],
+      "operationalization": "Likert composites",
+      "variables": [
+        {
+          "name": "transparency_score",
+          "type": "continuous",
+          "role": "independent",
+          "description": "Transparency"
+        },
+        {
+          "name": "trust_score",
+          "type": "continuous",
+          "role": "dependent",
+          "description": "Trust"
+        }
+      ]
+    }
+  ]
+}

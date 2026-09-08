@@ -1,0 +1,64 @@
+{
+  "status": "awaiting_human_gate",
+  "completedStages": [
+    "ingest-literature",
+    "generate-proposal",
+    "design-methodology",
+    "generate-dataset",
+    "run-analysis",
+    "make-visualizations",
+    "draft-results",
+    "assemble-paper"
+  ],
+  "lastUpdatedAt": "2026-09-08T03:37:35.599Z",
+  "currentStage": "peer-review",
+  "selectedQuestion": {
+    "selectionType": "candidate",
+    "label": "RQ1",
+    "question": "Mock research question 1"
+  },
+  "proposalApproved": true,
+  "humanGate": {
+    "type": "peer-review",
+    "pending": true,
+    "payload": {
+      "comments": [
+        {
+          "comment": "The literature review should include more recent studies on transformer models.",
+          "section": "Reviewer #1"
+        },
+        {
+          "comment": "Explain why Dataset X was chosen over Dataset Y.",
+          "section": "Reviewer #1"
+        },
+        {
+          "comment": "Figure 2 is blurry and should be regenerated.",
+          "section": "Reviewer #1"
+        },
+        {
+          "comment": "Add a discussion of limitations.",
+          "section": "Reviewer #1"
+        },
+        {
+          "comment": "The abstract is too long.",
+          "section": "Reviewer #2"
+        },
+        {
+          "comment": "Include statistical significance values (p-values).",
+          "section": "Reviewer #2"
+        },
+        {
+          "comment": "Expand the conclusion with future work.",
+          "section": "Reviewer #2"
+        }
+      ],
+      "currentIndex": 1,
+      "suggestion": "Response: Mock response.\nRevision: Mock revised section text."
+    }
+  },
+  "peerReview": {
+    "commentsFile": "/Users/arnavthakur/Downloads/ARPA-main/data/peer_comments.txt",
+    "currentIndex": 1,
+    "total": 7
+  }
+}
