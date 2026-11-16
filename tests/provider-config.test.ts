@@ -31,4 +31,13 @@ describe("primary LLM provider configuration", () => {
 
     expect(() => requireStageConfig("run-all")).toThrow("ANTHROPIC_API_KEY");
   });
+
+  it("allows Groq when GROQ_API_KEY is configured", () => {
+    process.env.MOCK_LLM = "0";
+    process.env.LLM_PROVIDER = "groq";
+    process.env.GROQ_API_KEY = "test-groq-key";
+
+    expect(getConfig().llmProvider).toBe("groq");
+    expect(() => requireStageConfig("run-all")).not.toThrow();
+  });
 });

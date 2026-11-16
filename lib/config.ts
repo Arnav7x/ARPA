@@ -1,9 +1,10 @@
 import { StageName } from "@/lib/types";
 
-export type PrimaryLlmProvider = "openai" | "anthropic";
+export type PrimaryLlmProvider = "openai" | "anthropic" | "groq";
 
 export interface AppConfig {
   anthropicApiKey?: string;
+  groqApiKey?: string;
   openaiApiKey?: string;
   googleApiKey?: string;
   notionApiKey?: string;
@@ -14,8 +15,8 @@ export interface AppConfig {
 
 function readPrimaryProvider(): PrimaryLlmProvider {
   const rawProvider = (process.env.LLM_PROVIDER ?? "openai").toLowerCase();
-  if (rawProvider === "anthropic") {
-    return "anthropic";
+  if (rawProvider === "anthropic" || rawProvider === "groq") {
+    return rawProvider;
   }
   return "openai";
 }
@@ -23,6 +24,7 @@ function readPrimaryProvider(): PrimaryLlmProvider {
 export function getConfig(): AppConfig {
   return {
     anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+    groqApiKey: process.env.GROQ_API_KEY,
     openaiApiKey: process.env.OPENAI_API_KEY,
     googleApiKey: process.env.GOOGLE_API_KEY,
     notionApiKey: process.env.NOTION_API_KEY,
@@ -58,6 +60,10 @@ export function requireStageConfig(stage: StageName) {
     throw new Error(
       `Missing required environment variable ANTHROPIC_API_KEY for stage '${stage}' because LLM_PROVIDER=anthropic.`
     );
+  }
+
+  if (config.llmProvider === "groq" && !config.groqApiKey) {
+    throw new Error(`Missing required environment variable GROQ_API_KEY for stage '${stage}' because LLM_PROVIDER=groq.`);
   }
 
   return config;
