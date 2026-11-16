@@ -30,7 +30,9 @@ export function getConfig(): AppConfig {
     notionApiKey: process.env.NOTION_API_KEY,
     notionParentPageId: process.env.NOTION_PARENT_PAGE_ID,
     llmProvider: readPrimaryProvider(),
-    mockLlm: ["1", "true", "yes"].includes((process.env.MOCK_LLM ?? "0").toLowerCase())
+    // The project is designed to run as a self-contained demo by default.
+    // Set MOCK_LLM=0 only when a configured external provider is intentional.
+    mockLlm: ["1", "true", "yes"].includes((process.env.MOCK_LLM ?? "1").toLowerCase())
   };
 }
 
