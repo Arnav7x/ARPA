@@ -6,6 +6,7 @@ import { findUnmatchedNumbers, replaceMarkdownSection } from "@/lib/utils";
 describe("web pipeline helpers", () => {
   it("detects falsifiable hypotheses", () => {
     expect(falsifiable("Higher transparency is associated with higher trust.")).toBe(true);
+    expect(falsifiable("Participants using guided mobile learning will show significantly higher autonomy scores.")).toBe(true);
     expect(falsifiable("Transparency matters.")).toBe(false);
   });
 

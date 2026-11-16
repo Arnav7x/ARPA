@@ -8,7 +8,7 @@ import { StageName } from "@/lib/types";
 import { countWords, extractMarkdownSection } from "@/lib/utils";
 
 export function falsifiable(hypothesis: string) {
-  return /\b(associated|predict|difference|higher|lower|increase|decrease|effect|correlat|compare)\b/i.test(
+  return /\b(associated|predict|difference|higher|lower|increase|decrease|effect|correlat|compare|improv|reduc|affect|influenc|impact|lead(?:s)?\s+to|result(?:s)?\s+in|significant(?:ly)?|greater|less)\b/i.test(
     hypothesis
   );
 }
