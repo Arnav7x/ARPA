@@ -669,7 +669,7 @@ button {
   z-index: 1;
   flex: 1;
   padding: 24px 32px 60px;
-  max-width: 1400px;
+  max-width: 980px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -864,7 +864,7 @@ button {
 /* ---------------------------------------------------- */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 20px;
 }
 
@@ -911,6 +911,10 @@ button {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+}
+
+.single-upload {
+  grid-template-columns: 1fr;
 }
 
 .dropzone {

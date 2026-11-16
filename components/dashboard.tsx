@@ -374,50 +374,6 @@ export function Dashboard() {
     <main className="app-shell">
       <BackgroundAnimation />
 
-      {/* Sidebar */}
-      <aside className="app-sidebar">
-        <Link className="brand-mark" href="/">
-          <span className="brand-logo-icon">
-            <Layers size={16} />
-          </span>
-          ARPA PaperLab
-        </Link>
-
-        <nav className="side-nav">
-          <a href="#overview" className="active">
-            <Home size={16} aria-hidden />
-            Overview
-          </a>
-          <a href="#pipeline">
-            <GitBranch size={16} aria-hidden />
-            Pipeline (9 Stages)
-          </a>
-          <a href="#figures">
-            <BarChart3 size={16} aria-hidden />
-            Figures &amp; Charts
-          </a>
-          <a href="#artifacts">
-            <FileArchive size={16} aria-hidden />
-            Artifacts ({payload?.artifacts.markdownArtifacts.length ?? 0})
-          </a>
-          <a href="#exports">
-            <Download size={16} aria-hidden />
-            Exports &amp; Bundle
-          </a>
-        </nav>
-
-        <div className="sidebar-footer">
-          <div className="user-info">
-            <strong>{profile?.name ?? "Lead Researcher"}</strong>
-            <span>{profile?.email ?? "workspace@local"}</span>
-          </div>
-          <button className="icon-button" onClick={signOut} title="Sign out" aria-label="Sign out">
-            <LogOut size={14} />
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Workspace Area */}
       <section className="workspace">
         {/* Header Bar */}
         <header className="workspace-header" id="overview">
@@ -475,50 +431,7 @@ export function Dashboard() {
           </div>
         ) : null}
 
-        {/* Metric Cards */}
-        <section className="metric-grid">
-          <article className="metric-card">
-            <div className="metric-icon-box">
-              <Gauge size={18} />
-            </div>
-            <div className="metric-data">
-              <strong>{status === "awaiting_human_gate" ? "Gate Pending" : status}</strong>
-              <small>Pipeline Status</small>
-            </div>
-          </article>
-
-          <article className="metric-card">
-            <div className="metric-icon-box">
-              <CheckCircle2 size={18} />
-            </div>
-            <div className="metric-data">
-              <strong>{completed.size} / 9</strong>
-              <small>Milestones ({completionPercentage}%)</small>
-            </div>
-          </article>
-
-          <article className="metric-card">
-            <div className="metric-icon-box">
-              <FileText size={18} />
-            </div>
-            <div className="metric-data">
-              <strong>{payload?.artifacts.markdownArtifacts.length ?? 0}</strong>
-              <small>Generated Artifacts</small>
-            </div>
-          </article>
-
-          <article className="metric-card">
-            <div className="metric-icon-box">
-              <BarChart3 size={18} />
-            </div>
-            <div className="metric-data">
-              <strong>{payload?.artifacts.figures.length ?? 0}</strong>
-              <small>Visualizations &amp; Assets</small>
-            </div>
-          </article>
-        </section>
-
-        {/* 9-Stage Progress Timeline */}
+        {/* Compact pipeline status */}
         <section className="pipeline-progress-section" id="pipeline">
           <div className="stepper-header">
             <h3>Pipeline Stages</h3>
@@ -561,14 +474,13 @@ export function Dashboard() {
             <section className="workspace-panel">
               <div className="panel-heading">
                 <div>
-                  <h2>Workspace Inputs</h2>
-                  <p>Upload source PDF research papers and reviewer comments.</p>
+                  <h2>Source paper</h2>
+                  <p>Upload a PDF, then run the guided demo.</p>
                 </div>
                 <FolderUp size={18} />
               </div>
 
-              <div className="upload-grid">
-                {/* Papers Upload */}
+              <div className="upload-grid single-upload">
                 <form onSubmit={uploadPapers} className="dropzone">
                   <UploadCloud size={20} />
                   <div>
@@ -593,75 +505,9 @@ export function Dashboard() {
                     {busyLabel === "upload-papers" ? "Uploading..." : "Upload PDFs"}
                   </button>
                 </form>
-
-                {/* Comments Upload */}
-                <form onSubmit={uploadComments} className="dropzone">
-                  <MessageSquareText size={20} />
-                  <div>
-                    <strong style={{ display: "block", fontSize: "0.86rem", fontWeight: 500 }}>Peer Comments</strong>
-                    <small style={{ color: "var(--text-muted)" }}>
-                      {commentFile ? commentFile.name : "Select .txt, .csv, or .rtf"}
-                    </small>
-                  </div>
-                  <input
-                    type="file"
-                    accept=".txt,.csv,.rtf"
-                    onChange={(e) => setCommentFile(e.target.files?.[0] ?? null)}
-                    style={{ fontSize: "0.78rem", width: "100%" }}
-                  />
-                  <button
-                    type="submit"
-                    className="secondary-action"
-                    disabled={!commentFile || busyLabel === "upload-comments"}
-                    style={{ width: "100%" }}
-                  >
-                    {busyLabel === "upload-comments" ? "Uploading..." : "Upload Comments"}
-                  </button>
-                </form>
               </div>
             </section>
 
-            {/* Individual Stage Runner List */}
-            <section className="workspace-panel">
-              <div className="panel-heading">
-                <div>
-                  <h2>Stage Execution</h2>
-                  <p>Execute individual pipeline stages independently.</p>
-                </div>
-              </div>
-
-              <div className="stage-list">
-                {STAGES.map((stage, index) => {
-                  const isDone = completed.has(stage.key);
-                  const isBusy = busyLabel === stage.key;
-
-                  return (
-                    <button
-                      key={stage.key}
-                      className="stage-row"
-                      disabled={Boolean(busyLabel)}
-                      onClick={() => runStage(stage.key)}
-                    >
-                      <span className={`stage-index ${isDone ? "done" : ""}`}>
-                        {isDone ? <Check size={14} /> : index + 1}
-                      </span>
-                      <div>
-                        <strong>
-                          {stage.label}
-                          {stage.isGate ? (
-                            <span style={{ marginLeft: "8px", fontSize: "0.7rem", border: "1px solid var(--border-medium)", padding: "1px 6px", borderRadius: "4px" }}>
-                              Gate
-                            </span>
-                          ) : null}
-                        </strong>
-                        <small>{stage.description}</small>
-                      </div>
-                      <ArrowRight size={14} color="var(--text-dim)" className={isBusy ? "spin" : ""} />
-                    </button>
-                  );
-                })}
-              </div>
-            </section>
           </div>
 
           {/* Right Column: Active Human Gate & Artifacts & Figures & Exports */}
