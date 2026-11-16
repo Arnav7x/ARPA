@@ -5,6 +5,19 @@ import { requireStageConfig } from "@/lib/config";
 import { runAllStages, runStage } from "@/lib/pipeline";
 import { StageName } from "@/lib/types";
 
+const validStages = new Set<StageName>([
+  "ingest-literature",
+  "generate-proposal",
+  "design-methodology",
+  "generate-dataset",
+  "run-analysis",
+  "make-visualizations",
+  "draft-results",
+  "assemble-paper",
+  "peer-review",
+  "run-all"
+]);
+
 const BodySchema = z.object({
   overwrite: z.boolean().optional(),
   style: z.enum(["apa", "ieee"]).optional(),
@@ -14,6 +27,9 @@ const BodySchema = z.object({
 
 export async function POST(request: NextRequest, { params }: { params: { stage: string } }) {
   const { stage } = params;
+  if (!validStages.has(stage as StageName)) {
+    return NextResponse.json({ error: `Unknown pipeline stage: ${stage}` }, { status: 404 });
+  }
   const parsed = BodySchema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });

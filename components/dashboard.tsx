@@ -151,7 +151,7 @@ export function Dashboard() {
     refreshState();
   }, []);
 
-  async function runStage(stage: StageName | "run-all") {
+  async function runStage(stage: StageName | "run-all", overwrite = true) {
     setBusyLabel(stage);
     setMessage("");
     try {
@@ -159,7 +159,7 @@ export function Dashboard() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          overwrite: true,
+          overwrite,
           style: "apa",
           n: 500
         })
@@ -364,7 +364,7 @@ export function Dashboard() {
       if (activeArtifactTab === "analysis" && (art.name.includes("summary_table") || art.name.includes("analysis") || art.name.includes("results_discussion"))) return true;
       if (activeArtifactTab === "draft" && art.name.includes("paper_draft")) return true;
       if (activeArtifactTab === "logs" && (art.name.includes("decision_log") || art.name.includes("peer_review_log") || art.name.includes("word_count"))) return true;
-      return true;
+      return false;
     });
   }, [payload?.artifacts.markdownArtifacts, activeArtifactTab, artifactSearch]);
 
@@ -454,7 +454,7 @@ export function Dashboard() {
             <button
               className="primary-action"
               disabled={Boolean(busyLabel)}
-              onClick={() => runStage("run-all")}
+              onClick={() => runStage("run-all", false)}
             >
               <Play size={14} />
               {busyLabel === "run-all" ? "Running..." : "Run Until Next Gate"}
@@ -1125,7 +1125,7 @@ export function Dashboard() {
             </div>
             <div className="modal-body">
               <p style={{ color: "var(--text-muted)", fontSize: "0.86rem", lineHeight: 1.6 }}>
-                This will reset the pipeline state to idle and clear generated intermediate artifacts. Uploaded raw papers will be preserved.
+                This will reset the pipeline state to idle and clear generated outputs. Uploaded source papers and comments will be preserved.
               </p>
               <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "20px" }}>
                 <button className="quiet-button" onClick={() => setShowResetModal(false)}>
