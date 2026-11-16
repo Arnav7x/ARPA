@@ -15,6 +15,30 @@ interface ExtractedPaper {
   body: string;
 }
 
+const MAX_SYNTHESIS_SOURCE_CHARS = 14_000;
+const MAX_ABSTRACT_CHARS = 1_200;
+
+/**
+ * Keep literature synthesis below provider context and rate limits while giving
+ * every uploaded paper a representative excerpt. The full extracted metadata is
+ * still written to disk separately for inspection.
+ */
+function preparePapersForSynthesis(papers: ExtractedPaper[]) {
+  const perPaperBudget = Math.max(800, Math.floor(MAX_SYNTHESIS_SOURCE_CHARS / Math.max(papers.length, 1)));
+
+  return papers.map((paper) => {
+    const abstract = paper.abstract.slice(0, Math.min(MAX_ABSTRACT_CHARS, Math.floor(perPaperBudget / 3)));
+    const bodyBudget = Math.max(400, perPaperBudget - abstract.length - 300);
+
+    return {
+      filename: paper.filename,
+      title: paper.title,
+      abstract,
+      body: paper.body.slice(0, bodyBudget)
+    };
+  });
+}
+
 function extractAbstract(text: string) {
   const match = text.match(/abstract[:\s]+([\s\S]{0,1200}?)(?:\n\s*\n|introduction|1\.)/i);
   return match?.[1]?.trim() ?? "";
@@ -99,6 +123,7 @@ export async function runIngestLiterature(overwrite = false) {
     }
 
     const papers = await Promise.all(files.map((file) => extractPaper(path.join(paths.rawPapersDir, file))));
+    const papersForSynthesis = preparePapersForSynthesis(papers);
     const synthesis = await llm.generateJson<{
       themes: Array<{ theme: string; agreements: string[]; conflicts: string[]; gaps: string[] }>;
       papers: Array<{ filename: string; methodology: string; keyFinding: string; acknowledgedGaps: string[] }>;
@@ -113,7 +138,7 @@ export async function runIngestLiterature(overwrite = false) {
         "gapList: list of at least 3 concise research gaps.",
         "Ground every item in the provided papers and never invent filenames.",
         "",
-        JSON.stringify(papers, null, 2)
+        JSON.stringify(papersForSynthesis, null, 2)
       ].join("\n")
     );
 

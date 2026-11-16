@@ -20,4 +20,9 @@ describe("parseLlmJson", () => {
       candidateQuestions: [{ label: "RQ1" }]
     });
   });
+
+  it("parses a JSON object followed by additional assistant prose", () => {
+    const response = '{"status":"ok"}\n\nI have completed the task.';
+    expect(parseLlmJson("trailing_prose", response)).toEqual({ status: "ok" });
+  });
 });

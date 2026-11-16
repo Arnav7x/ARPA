@@ -15,6 +15,35 @@ function uniqueCandidates(candidates: string[]) {
   return Array.from(new Set(candidates.map((candidate) => candidate.trim()).filter(Boolean)));
 }
 
+function balancedJsonCandidate(text: string, start: number) {
+  const opening = text[start];
+  if (opening !== "{" && opening !== "[") return "";
+
+  const stack: string[] = [opening === "{" ? "}" : "]"];
+  let inString = false;
+  let escaped = false;
+
+  for (let index = start + 1; index < text.length; index += 1) {
+    const character = text[index];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === '"') inString = false;
+      continue;
+    }
+
+    if (character === '"') inString = true;
+    else if (character === "{") stack.push("}");
+    else if (character === "[") stack.push("]");
+    else if (character === stack[stack.length - 1]) {
+      stack.pop();
+      if (!stack.length) return text.slice(start, index + 1);
+    }
+  }
+
+  return "";
+}
+
 function jsonCandidates(text: string) {
   const trimmed = text.trim().replace(/^\uFEFF/, "");
   const candidates = [trimmed];
@@ -33,6 +62,13 @@ function jsonCandidates(text: string) {
   const arrayEnd = trimmed.lastIndexOf("]");
   if (arrayStart >= 0 && arrayEnd > arrayStart) {
     candidates.push(trimmed.slice(arrayStart, arrayEnd + 1));
+  }
+
+  for (let index = 0; index < trimmed.length; index += 1) {
+    if (trimmed[index] === "{" || trimmed[index] === "[") {
+      const candidate = balancedJsonCandidate(trimmed, index);
+      if (candidate) candidates.push(candidate);
+    }
   }
 
   return uniqueCandidates(candidates);
@@ -198,7 +234,7 @@ export function createLlmClient(): LlmClient {
           baseURL: "https://api.groq.com/openai/v1"
         });
         const response = await client.responses.create({
-          model: process.env.GROQ_MODEL ?? "openai/gpt-oss-20b",
+          model: process.env.GROQ_MODEL ?? "qwen/qwen3.8-27b",
           temperature: 0.2,
           input: prompt
         });
@@ -230,6 +266,33 @@ export function createLlmClient(): LlmClient {
     },
 
     async generateJson(taskName, prompt, provider = primaryProvider) {
+      if (config.mockLlm) {
+        return parseLlmJson(taskName, getMockText(taskName));
+      }
+
+      if (provider === "groq") {
+        if (!config.groqApiKey) {
+          throw new Error(`Missing GROQ_API_KEY for task '${taskName}'.`);
+        }
+        const client = new OpenAI({
+          apiKey: config.groqApiKey,
+          baseURL: "https://api.groq.com/openai/v1"
+        });
+        const response = await client.chat.completions.create({
+          model: process.env.GROQ_MODEL ?? "qwen/qwen3.8-27b",
+          temperature: 0.2,
+          response_format: { type: "json_object" },
+          messages: [
+            {
+              role: "system",
+              content: "Return only a valid JSON object. Follow the requested keys and do not add commentary."
+            },
+            { role: "user", content: prompt }
+          ]
+        });
+        return parseLlmJson(taskName, response.choices[0]?.message.content ?? "");
+      }
+
       const text = await this.generateText(taskName, prompt, provider);
       return parseLlmJson(taskName, text);
     }

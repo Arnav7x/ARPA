@@ -71,6 +71,15 @@ LLM_PROVIDER=anthropic
 ANTHROPIC_API_KEY=your_key_here
 ```
 
+For Groq-backed generation:
+
+```env
+MOCK_LLM=0
+LLM_PROVIDER=groq
+GROQ_API_KEY=your_key_here
+GROQ_MODEL=qwen/qwen3.8-27b
+```
+
 ### 3. Start the app
 
 ```bash
