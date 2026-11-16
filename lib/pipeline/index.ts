@@ -63,7 +63,11 @@ export async function runAllStages(options: StageRunOptions = {}) {
       continue;
     }
 
-    const result = await runStage(stage, options);
+    // A stage that has not completed may still have partial or starter artifacts
+    // on disk (for example, the bundled demo dataset). Replacing only that
+    // stage's outputs lets "Run Until Next Gate" resume safely without rerunning
+    // completed work.
+    const result = await runStage(stage, { ...options, overwrite: true });
     executed.push({ stage, result });
     if ((result as { status?: string }).status === "awaiting_human_gate") {
       break;
